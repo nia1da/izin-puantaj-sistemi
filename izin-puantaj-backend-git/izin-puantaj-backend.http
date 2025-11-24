@@ -1,0 +1,6 @@
+@izin_puantaj_backend_HostAddress = http://localhost:5183
+
+GET {{izin_puantaj_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
