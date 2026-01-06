@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import MyLeaves from "./pages/MyLeaves"; // <-- 1. BUNU EKLE
+import MyLeaves from "./pages/MyLeaves";
+import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -29,6 +30,17 @@ export default function App() {
           } 
         />
         {/* ----------------------------------- */}
+
+        {/* --- 3. Admin Paneli --- */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        {/* ----------------------- */}
 
       </Routes>
     </BrowserRouter>

@@ -79,6 +79,14 @@ export default function Dashboard() {
             </a>
             {/* ------------------------------------ */}
 
+            {/* --- ADMİN PANELİ BUTONU (Sadece admin için) --- */}
+            {(user?.Department === "Yönetim" || user?.department === "Yönetim") && (
+              <a href="/admin" className="bg-purple-50 hover:bg-purple-100 text-purple-600 text-sm font-semibold px-4 py-2 rounded-lg transition border border-purple-200 flex items-center gap-2">
+                <span>⚙️</span> <span className="hidden sm:inline">Admin Paneli</span>
+              </a>
+            )}
+            {/* ------------------------------------------------- */}
+
             <button onClick={handleLogout} className="bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold px-4 py-2 rounded-lg transition border border-red-200">
               Çıkış
             </button>
