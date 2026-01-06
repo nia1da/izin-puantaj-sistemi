@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("izin-puantaj-backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9e21adaf8edb2790a6ee191a7512f41ba95bcfd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8820282bd7a4d113fcb647c509bc2a74837821d4")]
 [assembly: System.Reflection.AssemblyProductAttribute("izin-puantaj-backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("izin-puantaj-backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
