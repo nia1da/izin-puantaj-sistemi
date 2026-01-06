@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using izin_puantaj_backend.Models;
+using izin_puantaj_backend.Utils;
 
 namespace izin_puantaj_backend.Data
 {
@@ -19,7 +20,7 @@ namespace izin_puantaj_backend.Data
                 { 
                     Id = 1, 
                     Username = "admin", 
-                    Password = "1234", 
+                    Password = PasswordHasher.HashPassword("1234"), 
                     Name = "Sistem Yöneticisi", 
                     Department = "Yönetim",
                     TotalLeaveDays = 30
@@ -32,7 +33,7 @@ namespace izin_puantaj_backend.Data
                 { 
                     Id = 2, 
                     Username = "ayse.yilmaz",  // İsim.Soyisim
-                    Password = "1001",         // Personel ID (Şifre)
+                    Password = PasswordHasher.HashPassword("1001"),         // Personel ID (Şifre)
                     Name = "Ayşe Yılmaz", 
                     Department = "İnsan Kaynakları",
                     TotalLeaveDays = 14,
@@ -46,7 +47,7 @@ namespace izin_puantaj_backend.Data
                 { 
                     Id = 3, 
                     Username = "mehmet.demir", // İsim.Soyisim
-                    Password = "1002",         // Personel ID (Şifre)
+                    Password = PasswordHasher.HashPassword("1002"),         // Personel ID (Şifre)
                     Name = "Mehmet Demir", 
                     Department = "Bilgi İşlem",
                     TotalLeaveDays = 20,

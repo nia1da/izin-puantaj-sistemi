@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using izin_puantaj_backend.Data;   
 using izin_puantaj_backend.Models; 
+using izin_puantaj_backend.Utils;
 
 namespace izin_puantaj_backend.Controllers
 {
@@ -19,10 +20,9 @@ namespace izin_puantaj_backend.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             // 1. Veritabanında kullanıcıyı bul
-            var user = _context.Users.FirstOrDefault(u =>
-                u.Username == request.Username && u.Password == request.Password);
+            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
 
-            if (user == null)
+            if (user == null || !PasswordHasher.VerifyPassword(request.Password, user.Password))
                 return Unauthorized(new { message = "Kullanıcı adı veya şifre hatalı." });
 
             // 2. Giriş Başarılı! Frontend'e gönderilecek paketi hazırla
