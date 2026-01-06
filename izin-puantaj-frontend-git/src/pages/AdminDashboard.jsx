@@ -11,6 +11,14 @@ export default function AdminDashboard() {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [selectedLeaveId, setSelectedLeaveId] = useState(null);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: "",
+    username: "",
+    password: "",
+    department: "",
+    totalLeaveDays: 14
+  });
   
   const itemsPerPage = 5;
 
@@ -79,6 +87,44 @@ export default function AdminDashboard() {
     window.location.href = "/";
   };
 
+  const handleAddUserClick = () => {
+    setNewUser({
+      name: "",
+      username: "",
+      password: "",
+      department: "",
+      totalLeaveDays: 14
+    });
+    setShowAddUserModal(true);
+  };
+
+  const handleAddUserSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!newUser.name.trim() || !newUser.username.trim() || !newUser.password.trim() || !newUser.department.trim()) {
+      alert("Lütfen tüm alanları doldurunuz.");
+      return;
+    }
+
+    try {
+      const res = await api.post("/api/Users", newUser);
+      setMessage(res.data.message);
+      setShowAddUserModal(false);
+      setNewUser({
+        name: "",
+        username: "",
+        password: "",
+        department: "",
+        totalLeaveDays: 14
+      });
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || "Personel eklenirken hata oluştu.";
+      setMessage(errorMsg);
+      setTimeout(() => setMessage(""), 5000);
+    }
+  };
+
   // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -110,6 +156,12 @@ export default function AdminDashboard() {
           </div>
           
           <div className="flex items-center gap-3">
+            <button 
+              onClick={handleAddUserClick}
+              className="bg-green-50 hover:bg-green-100 text-green-600 text-sm font-semibold px-4 py-2 rounded-lg transition border border-green-200"
+            >
+              + Yeni Personel Ekle
+            </button>
             <button 
               onClick={() => navigate("/dashboard")} 
               className="bg-blue-50 hover:bg-blue-100 text-blue-600 text-sm font-semibold px-4 py-2 rounded-lg transition border border-blue-200"
@@ -272,6 +324,93 @@ export default function AdminDashboard() {
                 Reddet
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* YENİ PERSONEL EKLEME MODAL */}
+      {showAddUserModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Yeni Personel Ekle</h3>
+            <form onSubmit={handleAddUserSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Ad Soyad</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Örn: Ahmet Yılmaz"
+                    value={newUser.name}
+                    onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Kullanıcı Adı</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Örn: ahmet.yilmaz"
+                    value={newUser.username}
+                    onChange={(e) => setNewUser({...newUser, username: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Şifre</label>
+                  <input
+                    type="password"
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Şifre giriniz"
+                    value={newUser.password}
+                    onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Departman</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="Örn: İnsan Kaynakları"
+                    value={newUser.department}
+                    onChange={(e) => setNewUser({...newUser, department: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Toplam İzin Hakkı (Gün)</label>
+                  <input
+                    type="number"
+                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="14"
+                    value={newUser.totalLeaveDays}
+                    onChange={(e) => setNewUser({...newUser, totalLeaveDays: parseInt(e.target.value) || 14})}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddUserModal(false);
+                    setNewUser({
+                      name: "",
+                      username: "",
+                      password: "",
+                      department: "",
+                      totalLeaveDays: 14
+                    });
+                  }}
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-lg transition"
+                >
+                  İptal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition"
+                >
+                  Ekle
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
