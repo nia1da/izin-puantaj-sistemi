@@ -12,13 +12,16 @@ export default function AdminDashboard() {
   const [rejectReason, setRejectReason] = useState("");
   const [selectedLeaveId, setSelectedLeaveId] = useState(null);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [newUser, setNewUser] = useState({
+  
+  const INITIAL_USER = {
     name: "",
     username: "",
     password: "",
     department: "",
     totalLeaveDays: 14
-  });
+  };
+  
+  const [newUser, setNewUser] = useState(INITIAL_USER);
   
   const itemsPerPage = 5;
 
@@ -88,13 +91,7 @@ export default function AdminDashboard() {
   };
 
   const handleAddUserClick = () => {
-    setNewUser({
-      name: "",
-      username: "",
-      password: "",
-      department: "",
-      totalLeaveDays: 14
-    });
+    setNewUser(INITIAL_USER);
     setShowAddUserModal(true);
   };
 
@@ -110,13 +107,7 @@ export default function AdminDashboard() {
       const res = await api.post("/api/Users", newUser);
       setMessage(res.data.message);
       setShowAddUserModal(false);
-      setNewUser({
-        name: "",
-        username: "",
-        password: "",
-        department: "",
-        totalLeaveDays: 14
-      });
+      setNewUser(INITIAL_USER);
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Personel eklenirken hata oluştu.";
@@ -391,13 +382,7 @@ export default function AdminDashboard() {
                   type="button"
                   onClick={() => {
                     setShowAddUserModal(false);
-                    setNewUser({
-                      name: "",
-                      username: "",
-                      password: "",
-                      department: "",
-                      totalLeaveDays: 14
-                    });
+                    setNewUser(INITIAL_USER);
                   }}
                   className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-lg transition"
                 >
