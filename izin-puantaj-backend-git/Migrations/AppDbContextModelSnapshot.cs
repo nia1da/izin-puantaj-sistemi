@@ -125,7 +125,7 @@ namespace izin_puantaj_backend.Migrations
                             Id = 1,
                             Department = "Yönetim",
                             Name = "Sistem Yöneticisi",
-                            Password = "1234",
+                            Password = "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ=",
                             TotalLeaveDays = 30,
                             UsedLeaveDays = 0,
                             Username = "admin"
@@ -135,7 +135,7 @@ namespace izin_puantaj_backend.Migrations
                             Id = 2,
                             Department = "İnsan Kaynakları",
                             Name = "Ayşe Yılmaz",
-                            Password = "1001",
+                            Password = "/mdf56rugwtv7Qm2TgNPhNy9rrQp2czNTruQ4Vr43XE=",
                             TotalLeaveDays = 14,
                             UsedLeaveDays = 2,
                             Username = "ayse.yilmaz"
@@ -145,7 +145,7 @@ namespace izin_puantaj_backend.Migrations
                             Id = 3,
                             Department = "Bilgi İşlem",
                             Name = "Mehmet Demir",
-                            Password = "1002",
+                            Password = "soG8LGFss8OglyFf3JOXrofm4GsVbMNOZWvnoanOiDk=",
                             TotalLeaveDays = 20,
                             UsedLeaveDays = 5,
                             Username = "mehmet.demir"

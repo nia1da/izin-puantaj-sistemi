@@ -86,9 +86,9 @@ namespace izin_puantaj_backend.Migrations
                 columns: new[] { "Id", "Department", "Name", "Password", "TotalLeaveDays", "UsedLeaveDays", "Username" },
                 values: new object[,]
                 {
-                    { 1, "Yönetim", "Sistem Yöneticisi", "1234", 30, 0, "admin" },
-                    { 2, "İnsan Kaynakları", "Ayşe Yılmaz", "1001", 14, 2, "ayse.yilmaz" },
-                    { 3, "Bilgi İşlem", "Mehmet Demir", "1002", 20, 5, "mehmet.demir" }
+                    { 1, "Yönetim", "Sistem Yöneticisi", "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ=", 30, 0, "admin" },
+                    { 2, "İnsan Kaynakları", "Ayşe Yılmaz", "/mdf56rugwtv7Qm2TgNPhNy9rrQp2czNTruQ4Vr43XE=", 14, 2, "ayse.yilmaz" },
+                    { 3, "Bilgi İşlem", "Mehmet Demir", "soG8LGFss8OglyFf3JOXrofm4GsVbMNOZWvnoanOiDk=", 20, 5, "mehmet.demir" }
                 });
 
             migrationBuilder.CreateIndex(
