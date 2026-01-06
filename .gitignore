@@ -1,0 +1,27 @@
+# Backend build artifacts
+izin-puantaj-backend-git/bin/
+izin-puantaj-backend-git/obj/
+*.dll
+*.exe
+*.pdb
+
+# Frontend build artifacts and dependencies
+izin-puantaj-frontend-git/node_modules/
+izin-puantaj-frontend-git/dist/
+izin-puantaj-frontend-git/package-lock.json
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
