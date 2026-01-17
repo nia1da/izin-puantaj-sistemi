@@ -128,6 +128,8 @@ namespace izin_puantaj_backend.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
         {
+            const int ADMIN_USER_ID = 1;
+            
             var user = _context.Users.Find(id);
             
             if (user == null)
@@ -135,8 +137,8 @@ namespace izin_puantaj_backend.Controllers
                 return NotFound(new { message = "Kullanıcı bulunamadı." });
             }
 
-            // Prevent deletion of admin user (ID = 1)
-            if (user.Id == 1)
+            // Prevent deletion of admin user
+            if (user.Id == ADMIN_USER_ID)
             {
                 return BadRequest(new { message = "Yönetici hesabı silinemez." });
             }

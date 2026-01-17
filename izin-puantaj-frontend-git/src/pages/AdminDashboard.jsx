@@ -412,7 +412,7 @@ export default function AdminDashboard() {
                           {record.checkOutTime ? record.checkOutTime : '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                          {record.totalHours ? `${record.totalHours.toFixed(2)} saat` : '-'}
+                          {record.totalHours && typeof record.totalHours === 'number' ? `${record.totalHours.toFixed(2)} saat` : '-'}
                         </td>
                       </tr>
                     ))}
