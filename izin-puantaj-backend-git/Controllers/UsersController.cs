@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using izin_puantaj_backend.Data;
 using izin_puantaj_backend.Models;
 using izin_puantaj_backend.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace izin_puantaj_backend.Controllers
 {
@@ -14,6 +15,24 @@ namespace izin_puantaj_backend.Controllers
         public UsersController(AppDbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _context.Users
+                .Select(u => new 
+                { 
+                    u.Id, 
+                    u.Name, 
+                    u.Username, 
+                    u.Department, 
+                    u.TotalLeaveDays,
+                    u.UsedLeaveDays
+                })
+                .ToList();
+
+            return Ok(users);
         }
 
         [HttpPost]
@@ -62,6 +81,71 @@ namespace izin_puantaj_backend.Controllers
                 }
             });
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequest request)
+        {
+            var user = _context.Users.Find(id);
+            
+            if (user == null)
+            {
+                return NotFound(new { message = "Kullanıcı bulunamadı." });
+            }
+
+            // Update user properties
+            if (!string.IsNullOrWhiteSpace(request.Name))
+            {
+                user.Name = request.Name;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.Department))
+            {
+                user.Department = request.Department;
+            }
+
+            if (request.TotalLeaveDays.HasValue)
+            {
+                user.TotalLeaveDays = request.TotalLeaveDays.Value;
+            }
+
+            _context.SaveChanges();
+
+            return Ok(new 
+            { 
+                message = "Kullanıcı bilgileri güncellendi.",
+                user = new 
+                { 
+                    user.Id, 
+                    user.Name, 
+                    user.Username, 
+                    user.Department, 
+                    user.TotalLeaveDays,
+                    user.UsedLeaveDays
+                }
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _context.Users.Find(id);
+            
+            if (user == null)
+            {
+                return NotFound(new { message = "Kullanıcı bulunamadı." });
+            }
+
+            // Prevent deletion of admin user (ID = 1)
+            if (user.Id == 1)
+            {
+                return BadRequest(new { message = "Yönetici hesabı silinemez." });
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            return Ok(new { message = "Kullanıcı başarıyla silindi." });
+        }
     }
 
     public class CreateUserRequest
@@ -71,5 +155,12 @@ namespace izin_puantaj_backend.Controllers
         public string Password { get; set; } = string.Empty;
         public string Department { get; set; } = string.Empty;
         public int TotalLeaveDays { get; set; } = 14;
+    }
+
+    public class UpdateUserRequest
+    {
+        public string? Name { get; set; }
+        public string? Department { get; set; }
+        public int? TotalLeaveDays { get; set; }
     }
 }
