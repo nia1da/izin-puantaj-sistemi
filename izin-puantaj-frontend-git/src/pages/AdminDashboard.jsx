@@ -161,6 +161,13 @@ export default function AdminDashboard() {
   const totalPages = Math.ceil(pendingLeaves.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+  const userTotals = attendanceRecords.reduce((acc, record) => {
+    const name = record.userName || "Bilinmeyen";
+    if (!acc[name]) acc[name] = 0;
+    acc[name] += (record.totalHours || 0);
+    return acc;
+  }, {});
 
   if (loading) {
     return (
@@ -387,6 +394,7 @@ export default function AdminDashboard() {
                 <p className="text-gray-400 text-lg italic">Puantaj kaydı bulunamadı.</p>
               </div>
             ) : (
+              <>
               <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
                   <thead className="bg-gray-100">
@@ -419,6 +427,24 @@ export default function AdminDashboard() {
                   </tbody>
                 </table>
               </div>
+              <div className="mt-8">
+                <h3 className="text-xl font-bold text-gray-700 mb-4">📅 Personel Bazlı Aylık Toplamlar</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Object.entries(userTotals).map(([name, hours]) => (
+                    <div key={name} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500 flex justify-between items-center transition hover:scale-105">
+                      <div>
+                        <div className="text-sm text-gray-500 font-bold uppercase">Personel</div>
+                        <div className="text-lg font-bold text-gray-800">{name}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-black text-purple-600">{hours.toFixed(2)}</div>
+                        <div className="text-xs text-gray-400">Saat</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              </>
             )}
           </div>
         </div>
