@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-// CORS Ayarları (Frontend erişimi için)
+// CORS Ayarları
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
