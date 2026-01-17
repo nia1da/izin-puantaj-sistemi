@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [pendingLeaves, setPendingLeaves] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,6 +29,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchPendingLeaves();
+    fetchUsers();
+    fetchAttendanceRecords();
   }, []);
 
   const fetchPendingLeaves = async () => {
@@ -38,6 +42,24 @@ export default function AdminDashboard() {
       setMessage("Talepler yüklenirken hata oluştu.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await api.get("/api/Users");
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Kullanıcılar çekilemedi", err);
+    }
+  };
+
+  const fetchAttendanceRecords = async () => {
+    try {
+      const res = await api.get("/api/Attendance/all");
+      setAttendanceRecords(res.data);
+    } catch (err) {
+      console.error("Puantaj kayıtları çekilemedi", err);
     }
   };
 
@@ -108,9 +130,25 @@ export default function AdminDashboard() {
       setMessage(res.data.message);
       setShowAddUserModal(false);
       setNewUser(INITIAL_USER);
+      fetchUsers(); // Refresh user list
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Personel eklenirken hata oluştu.";
+      setMessage(errorMsg);
+      setTimeout(() => setMessage(""), 5000);
+    }
+  };
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (!confirm(`${userName} adlı personeli silmek istediğinizden emin misiniz?`)) return;
+
+    try {
+      const res = await api.delete(`/api/Users/${userId}`);
+      setMessage(res.data.message);
+      fetchUsers(); // Refresh user list
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || "Kullanıcı silinirken hata oluştu.";
       setMessage(errorMsg);
       setTimeout(() => setMessage(""), 5000);
     }
@@ -280,6 +318,107 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </>
+            )}
+          </div>
+        </div>
+
+        {/* SECTION 2: EMPLOYEE MANAGEMENT (Personel Yönetimi) */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mt-8">
+          <div className="bg-gray-50 px-8 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold text-gray-700 flex items-center gap-2">
+              <span>👥</span> Personel Yönetimi
+            </h2>
+          </div>
+
+          <div className="p-6">
+            {users.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-gray-400 text-lg italic">Personel kaydı bulunamadı.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Ad Soyad</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Departman</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Toplam İzin</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Kullanılan İzin</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">İşlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {users.map((user) => (
+                      <tr key={user.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{user.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.department}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.totalLeaveDays} gün</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.usedLeaveDays} gün</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <button
+                            onClick={() => handleDeleteUser(user.id, user.name)}
+                            className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg transition transform active:scale-95"
+                          >
+                            🗑️ Sil
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* SECTION 3: ATTENDANCE REPORT (Puantaj Kayıtları) */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mt-8">
+          <div className="bg-gray-50 px-8 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-bold text-gray-700 flex items-center gap-2">
+              <span>📊</span> Puantaj Kayıtları
+            </h2>
+          </div>
+
+          <div className="p-6">
+            {attendanceRecords.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-gray-400 text-lg italic">Puantaj kaydı bulunamadı.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Personel Adı</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tarih</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Giriş Saati</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Çıkış Saati</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Toplam Saat</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {attendanceRecords.map((record) => (
+                      <tr key={record.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{record.userName}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          {new Date(record.date).toLocaleDateString('tr-TR')}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          {record.checkInTime ? record.checkInTime : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          {record.checkOutTime ? record.checkOutTime : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                          {record.totalHours && typeof record.totalHours === 'number' ? `${record.totalHours.toFixed(2)} saat` : '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>

@@ -77,6 +77,28 @@ namespace izin_puantaj_backend.Controllers
                 return BadRequest(new { message = "Bugün zaten mesainiz tamamlandı. 👋" });
             }
         }
+
+        // 3. Get All Attendance Records (for Admin)
+        [HttpGet("all")]
+        public IActionResult GetAllAttendanceRecords()
+        {
+            var records = _context.AttendanceRecords
+                .Include(r => r.User)
+                .Select(r => new
+                {
+                    r.Id,
+                    r.UserId,
+                    UserName = r.User != null ? r.User.Name : "Unknown",
+                    r.Date,
+                    r.CheckInTime,
+                    r.CheckOutTime,
+                    r.TotalHours
+                })
+                .OrderByDescending(r => r.Date)
+                .ToList();
+
+            return Ok(records);
+        }
     }
 
     // Frontend'den gelen veriyi karşılayan kutucuk (Class)
